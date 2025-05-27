@@ -1,16 +1,6 @@
 name: event-planner-mcp
-description: Belirli bir şehir ve tarihe göre etkinlik önerileri sunan MCP API
-entrypoint: run.py
+description: Event planner with Ticketmaster API
+entrypoint: main.py
 runtime: python3
 ports:
   - 5000
-environment:
-  FLASK_ENV: production
-  PYTHONUNBUFFERED: "1"
-  PORT: "5000"
-healthcheck:
-  path: /health
-  interval: 30
-  timeout: 10
-  retries: 3
-  start_period: 10
