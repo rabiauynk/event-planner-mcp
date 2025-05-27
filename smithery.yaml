@@ -1,0 +1,6 @@
+name: event-planner-mcp
+description: Belirli bir şehir ve tarihe göre etkinlik önerileri sunan MCP API
+entrypoint: app.py
+runtime: python3
+ports:
+  - 5000
