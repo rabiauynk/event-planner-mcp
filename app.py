@@ -1,14 +1,19 @@
 import os
 
-from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 
-from planner import get_events
-
-# Load environment variables from .env file
-load_dotenv()
+# Try to load dotenv, but don't fail if it's not available
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
 
 app = Flask(__name__)
+
+# Import planner module
+from planner import get_events
+
 
 @app.route("/")
 def home():
