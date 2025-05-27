@@ -1,8 +1,8 @@
-# Environment variables
-.env
-.env.local
-.env.production
-.env.staging
+# Environment variables (optional - API key is now built-in)
+# .env
+# .env.local
+# .env.production
+# .env.staging
 
 # Python
 __pycache__/

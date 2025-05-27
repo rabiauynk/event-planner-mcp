@@ -8,10 +8,8 @@ def get_events(city, date):
     """
     Ticketmaster API'sini kullanarak belirli bir şehir ve tarihe göre etkinlikleri getirir.
     """
-    api_key = os.getenv('TICKETMASTER_API_KEY')
-
-    if not api_key:
-        raise Exception("Ticketmaster API key bulunamadı. Lütfen TICKETMASTER_API_KEY environment variable'ını ayarlayın.")
+    # Ticketmaster API Key - doğrudan kod içinde
+    api_key = os.getenv('TICKETMASTER_API_KEY') or 'iEXnISiQ5GXqqBWIlBzLOwP3cej3CKlo'
 
     # Ticketmaster API endpoint
     base_url = "https://app.ticketmaster.com/discovery/v2/events.json"

@@ -15,15 +15,12 @@ Ticketmaster API'sini kullanarak belirli bir şehir ve tarihe göre etkinlik ön
 pip install -r requirements.txt
 ```
 
-2. `.env` dosyasını oluşturun ve Ticketmaster API key'inizi ekleyin:
-```
-TICKETMASTER_API_KEY=your_api_key_here
-```
-
-3. Uygulamayı çalıştırın:
+2. Uygulamayı çalıştırın:
 ```bash
 python app.py
 ```
+
+**Not:** Ticketmaster API key'i kod içinde gömülü olarak gelir. İsteğe bağlı olarak `.env` dosyasında `TICKETMASTER_API_KEY` ile override edebilirsiniz.
 
 ### Docker ile Kurulum
 
@@ -34,13 +31,15 @@ docker build -t event-planner-mcp .
 
 2. Container'ı çalıştırın:
 ```bash
-docker run -p 5000:5000 -e TICKETMASTER_API_KEY=your_api_key_here event-planner-mcp
+docker run -p 5000:5000 event-planner-mcp
 ```
+
+**Not:** API key kod içinde gömülü olduğu için environment variable gerekli değil.
 
 ## API Kullanımı
 
 ### Endpoint: `/events`
-**Method:** POST  
+**Method:** POST
 **Content-Type:** application/json
 
 #### İstek Formatı:
