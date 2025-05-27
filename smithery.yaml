@@ -1,6 +1,10 @@
-name: event-planner-mcp
-description: Event planner with Ticketmaster API
-entrypoint: main.py
-runtime: python3
-ports:
-  - 5000
+startCommand:
+  type: http
+  configSchema:
+    type: object
+    properties:
+      apiKey:
+        type: string
+        title: "Ticketmaster API Key"
+        description: "Your Ticketmaster API key"
+        default: "iEXnISiQ5GXqqBWIlBzLOwP3cej3CKlo"

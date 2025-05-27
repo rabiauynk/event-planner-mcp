@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-Minimal Event Planner MCP - Single file solution
+Event Planner MCP Server - HTTP Implementation
 """
-import os
 import json
+import os
+from urllib.parse import parse_qs
 
 # Minimal Flask app
 try:
-    from flask import Flask, request, jsonify
+    from flask import Flask, Response, jsonify, request
 except ImportError:
     print("Flask not available")
     exit(1)
@@ -23,6 +24,28 @@ app = Flask(__name__)
 
 # Built-in API key
 TICKETMASTER_API_KEY = 'iEXnISiQ5GXqqBWIlBzLOwP3cej3CKlo'
+
+# MCP Protocol Implementation
+MCP_TOOLS = [
+    {
+        "name": "get_events",
+        "description": "Get events for a specific city and date using Ticketmaster API",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string",
+                    "description": "City name to search for events"
+                },
+                "date": {
+                    "type": "string",
+                    "description": "Date in YYYY-MM-DD format"
+                }
+            },
+            "required": ["city", "date"]
+        }
+    }
+]
 
 def get_events_simple(city, date):
     """Simple event fetcher with fallback"""
@@ -87,30 +110,56 @@ def get_events_simple(city, date):
             "error": str(e)
         }]
 
+# MCP HTTP Server Endpoints
+@app.route('/mcp', methods=['POST'])
+def mcp_handler():
+    """Main MCP endpoint"""
+    try:
+        data = request.get_json()
+        method = data.get('method')
+
+        if method == 'tools/list':
+            return jsonify({
+                "tools": MCP_TOOLS
+            })
+
+        elif method == 'tools/call':
+            tool_name = data.get('params', {}).get('name')
+            arguments = data.get('params', {}).get('arguments', {})
+
+            if tool_name == 'get_events':
+                city = arguments.get('city', 'İstanbul')
+                date = arguments.get('date', '2024-12-25')
+                events = get_events_simple(city, date)
+
+                return jsonify({
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": json.dumps({"events": events}, ensure_ascii=False, indent=2)
+                        }
+                    ]
+                })
+            else:
+                return jsonify({"error": f"Unknown tool: {tool_name}"}), 400
+
+        else:
+            return jsonify({"error": f"Unknown method: {method}"}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/')
 def home():
     return {
-        "status": "Event Planner MCP is running",
+        "status": "Event Planner MCP Server",
         "version": "1.0.0",
-        "api_ready": True
+        "mcp_endpoint": "/mcp"
     }
 
 @app.route('/health')
 def health():
     return {"status": "healthy"}
-
-@app.route('/events', methods=['POST'])
-def events():
-    try:
-        data = request.get_json() or {}
-        city = data.get('city', 'İstanbul')
-        date = data.get('date', '2024-12-25')
-        
-        events = get_events_simple(city, date)
-        return jsonify({"events": events})
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
